@@ -1,16 +1,25 @@
+import Header from "@/components/Header";
+import Sidebar from "@/components/Sidebar";
 import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <h1 className="text-4xl font-bold tracking-tight">
-        Snippet Vault
-      </h1>
-      <p className="mt-4 text-muted-foreground">
-        AI-Powered Code & Prompt Workspace
-      </p>
-    </main>
+    <div className="flex min-h-screen bg-background text-foreground">
+      <Sidebar />
+      <div className="flex-1 flex flex-col">
+        <Header />
+        <main className="flex-1 p-6">
+          <div className="max-w-5xl mx-auto">
+            <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              Manage your prompts and code snippets efficiently.
+            </p>
+            <div className="mt-8 border border-dashed border-border rounded-xl p-12 text-center">
+              <p className="text-muted-foreground">No snippets found. Click "New Snippet" to add one.</p>
+            </div>
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
