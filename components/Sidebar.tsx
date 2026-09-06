@@ -1,6 +1,7 @@
+"use client";
 import Link from "next/link";
 import { Code2, FolderGit2, Home, Search, Settings, Sparkles, Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import CreateSnippetModal from "./CreateSnippetModal";
 
 export default function Sidebar() {
   return (
@@ -12,10 +13,9 @@ export default function Sidebar() {
           </div>
           <span className="font-bold text-lg tracking-tight">SnippetVault</span>
         </div>
-        <Button className="w-full justify-start gap-2 bg-primary hover:bg-primary/90">
-          <Plus className="w-4 h-4" />
-          <span>New Snippet</span>
-        </Button>
+
+        <CreateSnippetModal />
+
         <nav className="space-y-1">
           <Link
             href="#"
@@ -40,6 +40,7 @@ export default function Sidebar() {
           </Link>
         </nav>
       </div>
+
       <div className="border-t border-border pt-4">
         <Link
           href="#"
