@@ -1,9 +1,13 @@
 "use client";
+
 import Link from "next/link";
-import { Code2, FolderGit2, Home, Search, Settings, Sparkles, Plus } from "lucide-react";
-import CreateSnippetModal from "./CreateSnippetModal";
+import { usePathname } from "next/navigation";
+import { Code2, FolderGit2, Home, Settings, Sparkles } from "lucide-react";
+import CreateSnippetModal from "@/components/CreateSnippetModal";
 
 export default function Sidebar() {
+  const pathname = usePathname();
+
   return (
     <aside className="w-64 border-r border-border bg-card min-h-screen p-4 flex flex-col justify-between">
       <div className="space-y-6">
@@ -14,19 +18,28 @@ export default function Sidebar() {
           <span className="font-bold text-lg tracking-tight">SnippetVault</span>
         </div>
 
+        {/* New Snippet Trigger Button with Modal */}
         <CreateSnippetModal />
 
         <nav className="space-y-1">
           <Link
-            href="#"
-            className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md bg-secondary text-secondary-foreground"
+            href="/"
+            className={`flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+              pathname === "/"
+                ? "bg-secondary text-secondary-foreground font-semibold"
+                : "text-muted-foreground hover:bg-muted"
+            }`}
           >
             <Home className="w-4 h-4" />
             All Snippets
           </Link>
           <Link
-            href="#"
-            className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-muted-foreground hover:bg-muted transition-colors"
+            href="/ai-search"
+            className={`flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+              pathname === "/ai-search"
+                ? "bg-secondary text-secondary-foreground font-semibold"
+                : "text-muted-foreground hover:bg-muted"
+            }`}
           >
             <Sparkles className="w-4 h-4 text-amber-500" />
             AI Search
