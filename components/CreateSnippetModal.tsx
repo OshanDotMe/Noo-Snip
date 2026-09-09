@@ -29,28 +29,35 @@ export default function CreateSnippetModal() {
 
     const tagArray = tags.split(",").map((t) => t.trim()).filter((t) => t.length > 0);
 
-    const {error} = await supabase.from("snippets").insert([
-      {
-        title,
-        description: description || null,
-        language: language.toLowerCase(),
-        code_content: codeContent,
-        tags: tagArray,
-      },
-    ]);
+    try{
+      const res = await fetch("/api/snippets", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title,
+          description,
+          language,
+          code_content: codeContent,
+          tags: tagArray,
+        }),
+      });
+      if(!res.ok){
+        const errData = await res.json();
+        throw new Error(errData.error || "Failed to save snippet");
+      }
 
-    setLoading(true);
-
-    if(error){
-      console.error("Error creating snippet:", error.message);
-      alert("Failed to save snippet: " + error.message);
-    }else{
       setTitle("");
       setDescription("");
       setCodeContent("");
       setTags("");
       setOpen(false);
       router.refresh();
+    }catch (err:any){
+      alert(err.message);
+    }finally{
+      setLoading(false);
     }
   };
 
