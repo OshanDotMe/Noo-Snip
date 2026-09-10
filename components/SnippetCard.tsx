@@ -4,6 +4,7 @@ import { Button } from "./ui/button";
 import { Check, Copy } from "lucide-react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { toast } from "sonner";
 
 export interface Snippet {
   id: string;
@@ -24,6 +25,7 @@ export default function SnippetCard({snippet}: SnippetCardProps){
 
   const handleCopy = async () =>{
     await navigator.clipboard.writeText(snippet.code_content);
+    toast.success("Code copied to clipboard!");
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
