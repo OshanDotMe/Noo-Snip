@@ -1,10 +1,8 @@
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { supabase } from "@/lib/supabase";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 export async function POST(req: Request) {
   try {
@@ -13,22 +11,17 @@ export async function POST(req: Request) {
     if (!query) {
       return NextResponse.json({ error: "Search query is required" }, { status: 400 });
     }
-    const embeddingResponse = await openai.embeddings.create({
-      model: "text-embedding-3-small",
-      input: query,
-    });
 
-    const query_embedding = embeddingResponse.data[0].embedding;
-
+    const model = genAI.getGenerativeModel({ model: "text-embedding-004" });
+    const result = await model.embedContent(query);
+    const query_embedding = result.embedding.values;
     const { data: snippets, error } = await supabase.rpc("match_snippets", {
       query_embedding,
       match_threshold: 0.2,
       match_count: 10,
     });
 
-    if (error) {
-      throw error;
-    }
+    if (error) throw error;
 
     return NextResponse.json({ snippets });
   } catch (err: any) {
