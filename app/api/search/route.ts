@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { pipeline } from "@xenova/transformers";
 import { supabase } from "@/lib/supabase";
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 export async function POST(req: Request) {
   try {
@@ -11,13 +9,13 @@ export async function POST(req: Request) {
     if (!query) {
       return NextResponse.json({ error: "Search query is required" }, { status: 400 });
     }
+    const extractor = await pipeline("feature-extraction", "Xenova/all-MiniLM-L6-v2");
+    const output = await extractor(query, { pooling: "mean", normalize: true });
+    const query_embedding = Array.from(output.data);
 
-    const model = genAI.getGenerativeModel({ model: "text-embedding-004" });
-    const result = await model.embedContent(query);
-    const query_embedding = result.embedding.values;
     const { data: snippets, error } = await supabase.rpc("match_snippets", {
       query_embedding,
-      match_threshold: 0.2,
+      match_threshold: 0.1,
       match_count: 10,
     });
 

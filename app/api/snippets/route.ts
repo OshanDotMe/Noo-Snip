@@ -1,10 +1,6 @@
-import { supabase } from "@/lib/supabase";
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import { error } from "console";
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
-
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || "");
+import { pipeline } from "@xenova/transformers";
+import { supabase } from "@/lib/supabase";
 
 export async function POST(req: Request) {
   try {
@@ -16,10 +12,9 @@ export async function POST(req: Request) {
 
     const textToEmbed = `Title: ${title}\nDescription: ${description || ""}\nLanguage: ${language}\nTags: ${tags ? tags.join(", ") : ""}\nCode:\n${code_content}`;
 
-    // Generate Embedding using Gemini text-embedding-004 model
-    const model = genAI.getGenerativeModel({ model: "text-embedding-004" });
-    const result = await model.embedContent(textToEmbed);
-    const embedding = result.embedding.values;
+    const extractor = await pipeline("feature-extraction", "Xenova/all-MiniLM-L6-v2");
+    const output = await extractor(textToEmbed, { pooling: "mean", normalize: true });
+    const embedding = Array.from(output.data);
 
     const { data, error } = await supabase
       .from("snippets")
