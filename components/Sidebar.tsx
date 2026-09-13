@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Code2, FolderGit2, Home, Settings, Sparkles } from "lucide-react";
+import { Code2, FolderGit2, Home, LogIn, Settings, Sparkles } from "lucide-react";
 import CreateSnippetModal from "@/components/CreateSnippetModal";
 
 export default function Sidebar() {
@@ -45,7 +45,7 @@ export default function Sidebar() {
             AI Search
           </Link>
           <Link
-            href="#"
+            href="/collections"
             className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-muted-foreground hover:bg-muted transition-colors"
           >
             <FolderGit2 className="w-4 h-4" />
@@ -56,11 +56,23 @@ export default function Sidebar() {
 
       <div className="border-t border-border pt-4">
         <Link
-          href="#"
+          href="/settings"
           className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-muted-foreground hover:bg-muted transition-colors"
         >
           <Settings className="w-4 h-4" />
           Settings
+        </Link>
+
+        <Link
+          href="/login"
+          className={`flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+            pathname === "/login"
+              ? "bg-secondary text-secondary-foreground font-semibold"
+              : "text-muted-foreground hover:bg-muted"
+          }`}
+        >
+          <LogIn className="w-4 h-4 text-emerald-500" />
+          Login / Account
         </Link>
       </div>
     </aside>

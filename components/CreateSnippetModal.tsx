@@ -1,83 +1,95 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
-import { Button } from "./ui/button";
-import { Plus } from "lucide-react";
-import { Label } from "./ui/label";
-import { Input } from "./ui/input";
-import { Textarea } from "./ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Plus, Code2 } from "lucide-react";
+import { toast } from "sonner";
 
-export default function CreateSnippetModal() {
+export default function CreateSnippetModal({
+  onCreated,
+  triggerClassName = "gap-2",
+}: {
+  onCreated?: () => void;
+  triggerClassName?: string;
+}) {
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [language, setLanguage] = useState("javascript");
   const [codeContent, setCodeContent] = useState("");
   const [tags, setTags] = useState("");
+  const [collectionId, setCollectionId] = useState<string>("");
+  const [collections, setCollections] = useState<{ id: string; name: string }[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [isPublic, setIsPublic] = useState(true);
 
-  const router = useRouter();
+  useEffect(() => {
+    if (open) {
+      supabase
+        .from("collections")
+        .select("id, name")
+        .then(({ data, error }) => {
+          if (error) console.error("Error loading collections:", error);
+          if (data) setCollections(data);
+        });
+    }
+  }, [open]);
 
-  const handleSubmit = async (e: React.FormEvent) =>{
+  const handleCreateSnippet = async (e: React.FormEvent) => {
     e.preventDefault();
-    if(!title || !codeContent) return;
-    
     setLoading(true);
 
-    const tagArray = tags.split(",").map((t) => t.trim()).filter((t) => t.length > 0);
+    const tagsArray = tags ? tags.split(",").map((t) => t.trim()) : [];
 
-    try{
-      const res = await fetch("/api/snippets", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title,
-          description,
-          language,
-          code_content: codeContent,
-          tags: tagArray,
-        }),
-      });
-      if(!res.ok){
-        const errData = await res.json();
-        throw new Error(errData.error || "Failed to save snippet");
-      }
+    const { error } = await supabase.from("snippets").insert([
+      {
+        title,
+        description,
+        language,
+        code_content: codeContent,
+        tags: tagsArray,
+        collection_id: collectionId || null,
+        is_public: isPublic,
+      },
+    ]);
 
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success("Snippet saved successfully!");
       setTitle("");
       setDescription("");
       setCodeContent("");
       setTags("");
+      setCollectionId("");
       setOpen(false);
-      router.refresh();
-    }catch (err:any){
-      alert(err.message);
-    }finally{
-      setLoading(false);
+      if (onCreated) onCreated();
     }
+    setLoading(false);
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="w-full justify-start gap-2 bg-primary hover:bg-primary/90">
-          <Plus className="w-4 h-4" />
-          <span>New Snippet</span>
+        <Button className={triggerClassName}>
+          <Plus className="w-4 h-4" /> New Snippet
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[520px] bg-card text-card-foreground">
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Create New Snippet</DialogTitle>
+          <DialogTitle className="flex items-center gap-2">
+            <Code2 className="w-5 h-5 text-primary" /> Create New Snippet
+          </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 mt-2">
-          <div className="space-y-1">
-            <Label htmlFor="title">Title *</Label>
+
+        <form onSubmit={handleCreateSnippet} className="space-y-4 pt-2">
+          <div>
+            <label className="text-xs font-medium mb-1 block">Title *</label>
             <Input
-              id="title"
               placeholder="e.g., React Custom Fetch Hook"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -85,56 +97,65 @@ export default function CreateSnippetModal() {
             />
           </div>
 
-          <div className="space-y-1">
-            <Label htmlFor="description">Description</Label>
+          <div>
+            <label className="text-xs font-medium mb-1 block">Description</label>
             <Input
-              id="description"
               placeholder="Short note about what this code or prompt does"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
           </div>
 
-          <div className="space-y-1">
-            <Label htmlFor="language">Language *</Label>
-            <Input
-              id="language"
-              placeholder="javascript, typescript, python, java, sql..."
-              value={language}
-              onChange={(e) => setLanguage(e.target.value)}
-              required
-            />
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs font-medium mb-1 block">Language *</label>
+              <Input
+                placeholder="javascript"
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                required
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-medium mb-1 block">Collection</label>
+              <select
+                className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                value={collectionId}
+                onChange={(e) => setCollectionId(e.target.value)}
+              >
+                <option value="">Select Collection (Optional)</option>
+                {collections.map((col) => (
+                  <option key={col.id} value={col.id}>
+                    {col.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
-          <div className="space-y-1">
-            <Label htmlFor="code">Code / Prompt *</Label>
+          <div>
+            <label className="text-xs font-medium mb-1 block">Code / Prompt *</label>
             <Textarea
-              id="code"
               placeholder="Paste your code snippet or prompt here..."
-              rows={6}
-              className="font-mono text-xs"
+              className="font-mono text-sm h-32"
               value={codeContent}
               onChange={(e) => setCodeContent(e.target.value)}
               required
             />
           </div>
 
-          <div className="space-y-1">
-            <Label htmlFor="tags">Tags (comma separated)</Label>
+          <div>
+            <label className="text-xs font-medium mb-1 block">Tags (comma separated)</label>
             <Input
-              id="tags"
               placeholder="react, hooks, frontend"
               value={tags}
               onChange={(e) => setTags(e.target.value)}
             />
           </div>
 
-          <div className="flex justify-end gap-2 pt-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setOpen(false)}
-            >
+          <div className="flex justify-end gap-3 pt-2">
+            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Cancel
             </Button>
             <Button type="submit" disabled={loading}>
