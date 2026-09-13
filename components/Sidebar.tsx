@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Code2, FolderGit2, Home, LogIn, Settings, Sparkles } from "lucide-react";
+import { Code2, FolderGit2, Globe, Home, LogIn, Settings, Sparkles } from "lucide-react";
 import CreateSnippetModal from "@/components/CreateSnippetModal";
 
 export default function Sidebar() {
@@ -23,23 +23,28 @@ export default function Sidebar() {
 
         <nav className="space-y-1">
           <Link
+            href="/explore"
+            className="flex items-center gap-3 px-3 py-2 text-sm rounded-lg hover:bg-accent"
+          >
+            <Globe className="w-4 h-4" />
+            Explore Community
+          </Link>
+          <Link
             href="/"
-            className={`flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-              pathname === "/"
+            className={`flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors ${pathname === "/"
                 ? "bg-secondary text-secondary-foreground font-semibold"
                 : "text-muted-foreground hover:bg-muted"
-            }`}
+              }`}
           >
             <Home className="w-4 h-4" />
             All Snippets
           </Link>
           <Link
             href="/ai-search"
-            className={`flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-              pathname === "/ai-search"
+            className={`flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors ${pathname === "/ai-search"
                 ? "bg-secondary text-secondary-foreground font-semibold"
                 : "text-muted-foreground hover:bg-muted"
-            }`}
+              }`}
           >
             <Sparkles className="w-4 h-4 text-amber-500" />
             AI Search
@@ -65,11 +70,10 @@ export default function Sidebar() {
 
         <Link
           href="/login"
-          className={`flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-            pathname === "/login"
+          className={`flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors ${pathname === "/login"
               ? "bg-secondary text-secondary-foreground font-semibold"
               : "text-muted-foreground hover:bg-muted"
-          }`}
+            }`}
         >
           <LogIn className="w-4 h-4 text-emerald-500" />
           Login / Account
