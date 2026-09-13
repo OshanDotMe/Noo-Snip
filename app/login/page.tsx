@@ -19,55 +19,61 @@ export default function LoginPage() {
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
+  
+    const cleanEmail = email.trim();
+    const cleanPassword = password.trim();
+  
     if (vaultPin.length !== 6 || isNaN(Number(vaultPin))) {
       toast.error("Security PIN must be exactly 6 digits!");
       setLoading(false);
       return;
     }
-
+  
     try {
       if (isSignUp) {
         const { data: authData, error: authError } = await supabase.auth.signUp({
-          email,
-          password,
+          email: cleanEmail,
+          password: cleanPassword,
         });
-
+  
         if (authError) throw authError;
-
+  
         if (authData.user) {
           const { error: profileError } = await supabase.from("user_profiles").insert([
             {
               id: authData.user.id,
-              email: authData.user.email,
+              email: cleanEmail,
               vault_pin: vaultPin,
             },
           ]);
-
+  
           if (profileError) throw profileError;
-
+  
           toast.success("Account created & verified with Security PIN!");
           router.push("/");
         }
       } else {
-        const { data: profile, error: pinError } = await supabase
-          .from("user_profiles")
-          .select("vault_pin")
-          .eq("email", email)
-          .single();
-
-        if (pinError || profile?.vault_pin !== vaultPin) {
-          toast.error("Invalid 6-Digit Vault PIN Code!");
-          setLoading(false);
-          return;
-        }
-        const { error: loginError } = await supabase.auth.signInWithPassword({
-          email,
-          password,
+        const { data: authData, error: loginError } = await supabase.auth.signInWithPassword({
+          email: cleanEmail,
+          password: cleanPassword,
         });
-
+  
         if (loginError) throw loginError;
-
+        if (authData.user) {
+          const { data: profile, error: pinError } = await supabase
+            .from("user_profiles")
+            .select("vault_pin")
+            .eq("id", authData.user.id)
+            .single();
+  
+          if (pinError || profile?.vault_pin !== vaultPin) {
+            await supabase.auth.signOut();
+            toast.error("Invalid 6-Digit Vault PIN Code!");
+            setLoading(false);
+            return;
+          }
+        }
+  
         toast.success("Access Granted to SnippetVault!");
         router.push("/");
       }
