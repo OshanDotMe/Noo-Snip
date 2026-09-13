@@ -154,6 +154,19 @@ export default function CreateSnippetModal({
             />
           </div>
 
+          <div className="flex items-center gap-2 pt-2">
+            <input
+              type="checkbox"
+              id="is_public"
+              checked={isPublic}
+              onChange={(e) => setIsPublic(e.target.checked)}
+              className="rounded border-input"
+            />
+            <label htmlFor="is_public" className="text-xs font-medium cursor-pointer">
+              Make this snippet public (visible to everyone)
+            </label>
+          </div>
+
           <div className="flex justify-end gap-3 pt-2">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Cancel
