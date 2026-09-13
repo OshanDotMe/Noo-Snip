@@ -42,9 +42,17 @@ export default function CreateSnippetModal({
   const handleCreateSnippet = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
+  
+    const { data: { user } } = await supabase.auth.getUser();
+  
+    if (!user) {
+      toast.error("User not authenticated!");
+      setLoading(false);
+      return;
+    }
+  
     const tagsArray = tags ? tags.split(",").map((t) => t.trim()) : [];
-
+  
     const { error } = await supabase.from("snippets").insert([
       {
         title,
@@ -54,18 +62,14 @@ export default function CreateSnippetModal({
         tags: tagsArray,
         collection_id: collectionId || null,
         is_public: isPublic,
+        user_id: user.id,
       },
     ]);
-
+  
     if (error) {
       toast.error(error.message);
     } else {
       toast.success("Snippet saved successfully!");
-      setTitle("");
-      setDescription("");
-      setCodeContent("");
-      setTags("");
-      setCollectionId("");
       setOpen(false);
       if (onCreated) onCreated();
     }
