@@ -1,97 +1,214 @@
 "use client";
+
 import { useState } from "react";
-import { Button } from "./ui/button";
-import { Check, Copy } from "lucide-react";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { supabase } from "@/lib/supabase";
+import { Edit2, Trash2, Loader2, AlertTriangle, X } from "lucide-react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import CodeBlock from "./COdeBlock";
 
 export interface Snippet {
   id: string;
   title: string;
-  description: string | null;
+  description?: string;
   code_content: string;
-  language: string;
-  tags: string[];
-  created_at: string;
+  language?: string;
+  tags?: string[];
+  is_public: boolean;
+  user_id?: string;
+  created_at?: string;
 }
 
 interface SnippetCardProps {
-  snippet: Snippet;
+  snippet?: Snippet;
+  onUpdate?: () => void;
 }
 
-export default function SnippetCard({snippet}: SnippetCardProps){
-  const [copied, setCopied] = useState(false);
+export default function SnippetCard({ snippet, onUpdate }: SnippetCardProps) {
+  if (!snippet) return null;
 
-  const handleCopy = async () =>{
-    await navigator.clipboard.writeText(snippet.code_content);
-    toast.success("Code copied to clipboard!");
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const [title, setTitle] = useState(snippet.title || "");
+  const [description, setDescription] = useState(snippet.description || "");
+  const [codeContent, setCodeContent] = useState(snippet.code_content || "");
+  const [isPublic, setIsPublic] = useState(snippet.is_public ?? false);
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    const { error } = await supabase.from("snippets").delete().eq("id", snippet.id);
+
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success("Snippet deleted successfully!");
+      setShowDeleteModal(false);
+      onUpdate?.();
+    }
+    setIsDeleting(false);
+  };
+
+  const handleEditSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const { error } = await supabase
+      .from("snippets")
+      .update({
+        title,
+        description,
+        code_content: codeContent,
+        is_public: isPublic,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", snippet.id);
+
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success("Snippet updated successfully!");
+      setIsEditing(false);
+      onUpdate?.();
+    }
+    setLoading(false);
   };
 
   return (
-    <div className="border border-border rounded-xl bg-card overflow-hidden flex flex-col justify-between shadow-sm hover:shadow-md transition-all">
-      <div className="p-4 border-b border-border flex items-center justify-between">
-        <div>
-          <h3 className="font-semibold text-base text-card-foreground">
-            {snippet.title}
-          </h3>
-          {snippet.description && (
-            <p className="text-xs text-muted-foreground mt-0.5">
-              {snippet.description}
-            </p>
-          )}
-        </div>
-        <span className="text-xs font-mono uppercase bg-muted px-2 py-1 rounded text-muted-foreground border border-border">
-          {snippet.language}
-        </span>
+    <div className="p-4 border border-border rounded-xl bg-card space-y-3 relative group">
+      <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <button
+          onClick={() => setIsEditing(true)}
+          className="p-1.5 hover:bg-muted rounded-md text-muted-foreground hover:text-foreground transition-colors"
+          title="Edit Snippet"
+        >
+          <Edit2 className="w-4 h-4" />
+        </button>
+        <button
+          onClick={() => setShowDeleteModal(true)}
+          className="p-1.5 hover:bg-destructive/10 rounded-md text-muted-foreground hover:text-destructive transition-colors"
+          title="Delete Snippet"
+        >
+          <Trash2 className="w-4 h-4" />
+        </button>
       </div>
 
-      <div className="relative group text-sm max-h-60 overflow-y-auto font-mono bg-[#1e1e1e]">
-        <Button
-          size="icon"
-          variant="ghost"
-          onClick={handleCopy}
-          className="absolute right-2 top-2 h-8 w-8 bg-background/80 backdrop-blur hover:bg-background opacity-0 group-hover:opacity-100 transition-opacity z-10"
-        >
-          {copied ? (
-            <Check className="w-4 h-4 text-green-500" />
-          ) : (
-            <Copy className="w-4 h-4 text-muted-foreground" />
-          )}
-        </Button>
-        
-        <SyntaxHighlighter
-          language={snippet.language.toLowerCase()}
-          style={vscDarkPlus}
-          customStyle={{
-            margin: 0,
-            padding: "1rem",
-            background: "transparent",
-            fontSize: "0.875rem",
-          }}
-        >
-          {snippet.code_content}
-        </SyntaxHighlighter>
-      </div>
+      <h3 className="font-semibold">{snippet.title}</h3>
+      {snippet.description && <p className="text-xs text-muted-foreground">{snippet.description}</p>}
+      <CodeBlock
+        code={snippet.code_content}
+        language={snippet.language || "javascript"}
+      />
 
-      <div className="p-3 bg-muted/30 border-t border-border flex flex-wrap gap-1.5 items-center">
-        {snippet.tags && snippet.tags.length > 0 ? (
-          snippet.tags.map((tag, idx) => (
-            <span
-              key={idx}
-              className="text-[10px] font-medium bg-primary/10 text-primary px-2 py-0.5 rounded-full"
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-card p-6 rounded-2xl border border-border w-full max-w-md space-y-4 shadow-2xl relative animate-in fade-in zoom-in-95 duration-150">
+            <button
+              onClick={() => setShowDeleteModal(false)}
+              className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
             >
-              #{tag}
-            </span>
-          ))
-        ) : (
-          <span className="text-xs text-muted-foreground italic">
-            No tags
-          </span>
-        )}
-      </div>
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-destructive/10 text-destructive rounded-xl">
+                <AlertTriangle className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-bold text-lg">Delete Snippet</h3>
+                <p className="text-xs text-muted-foreground">This action cannot be undone.</p>
+              </div>
+            </div>
+
+            <p className="text-sm text-muted-foreground">
+              Are you sure you want to delete <strong className="text-foreground">"{snippet.title}"</strong>?
+            </p>
+
+            <div className="flex justify-end gap-2 pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setShowDeleteModal(false)}
+                disabled={isDeleting}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={handleDelete}
+                disabled={isDeleting}
+              >
+                {isDeleting ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : null}
+                Delete Snippet
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isEditing && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-card p-6 rounded-2xl border border-border w-full max-w-lg space-y-4 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex justify-between items-center">
+              <h2 className="text-lg font-bold">Edit Snippet</h2>
+              <button
+                onClick={() => setIsEditing(false)}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleEditSubmit} className="space-y-3">
+              <div>
+                <label className="text-xs font-medium">Title</label>
+                <Input value={title} onChange={(e) => setTitle(e.target.value)} required />
+              </div>
+
+              <div>
+                <label className="text-xs font-medium">Description</label>
+                <Input value={description} onChange={(e) => setDescription(e.target.value)} />
+              </div>
+
+              <div>
+                <label className="text-xs font-medium">Code / Prompt</label>
+                <textarea
+                  className="w-full p-2.5 bg-background border border-input rounded-md text-xs font-mono h-32 focus:outline-none focus:ring-1 focus:ring-ring"
+                  value={codeContent}
+                  onChange={(e) => setCodeContent(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id={`edit-public-${snippet.id}`}
+                  checked={isPublic}
+                  onChange={(e) => setIsPublic(e.target.checked)}
+                  className="rounded border-input cursor-pointer"
+                />
+                <label htmlFor={`edit-public-${snippet.id}`} className="text-xs cursor-pointer select-none">
+                  Make snippet public
+                </label>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2">
+                <Button type="button" variant="outline" onClick={() => setIsEditing(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={loading}>
+                  {loading ? "Updating..." : "Save Changes"}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

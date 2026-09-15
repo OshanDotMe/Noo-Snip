@@ -7,6 +7,7 @@ import CreateSnippetModal from "@/components/CreateSnippetModal";
 import { supabase } from "@/lib/supabase";
 import { ArrowLeft, Code2 } from "lucide-react";
 import Link from "next/link";
+import CodeBlock from "@/components/COdeBlock";
 
 export default function CollectionDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -70,9 +71,10 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
                     <h3 className="font-semibold">{item.title}</h3>
                     <span className="text-xs bg-muted px-2 py-1 rounded font-mono">{item.language}</span>
                   </div>
-                  <pre className="p-3 bg-slate-950 text-slate-50 text-xs rounded-lg overflow-x-auto font-mono">
-                    <code>{item.code_content}</code>
-                  </pre>
+                  <CodeBlock
+                    code={item.code_content}
+                    language={item.language || "javascript"}
+                  />
                 </div>
               ))}
             </div>

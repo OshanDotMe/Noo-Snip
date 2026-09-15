@@ -5,13 +5,15 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { ShieldCheck, KeyRound, Mail, Lock } from "lucide-react";
+import { ShieldCheck, KeyRound, Mail, Lock, User } from "lucide-react";
 import { toast } from "sonner";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [vaultPin, setVaultPin] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -19,49 +21,54 @@ export default function LoginPage() {
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-  
+
     const cleanEmail = email.trim();
     const cleanPassword = password.trim();
-  
+
+    // 1. PIN Validation Check
     if (vaultPin.length !== 6 || isNaN(Number(vaultPin))) {
       toast.error("Security PIN must be exactly 6 digits!");
       setLoading(false);
       return;
     }
-  
+
     try {
       if (isSignUp) {
+        // Sign Up Logic
         const { data: authData, error: authError } = await supabase.auth.signUp({
           email: cleanEmail,
           password: cleanPassword,
           options: {
             data: {
+              first_name: firstName,
+              last_name: lastName,
               vault_pin: vaultPin,
             },
           },
         });
-  
+
         if (authError) throw authError;
-  
+
         toast.success("Account created successfully! Please log in.");
         setIsSignUp(false);
       } else {
+        // Log In Logic
         const { data: authData, error: loginError } = await supabase.auth.signInWithPassword({
           email: cleanEmail,
           password: cleanPassword,
         });
-  
+
         if (loginError) throw loginError;
-  
+
         const savedPin = authData.user?.user_metadata?.vault_pin;
-  
+
         if (savedPin !== vaultPin) {
           await supabase.auth.signOut();
           toast.error("Invalid 6-Digit Vault PIN Code!");
           setLoading(false);
           return;
         }
-  
+
         toast.success("Access Granted to SnippetVault!");
         router.push("/");
       }
@@ -86,6 +93,34 @@ export default function LoginPage() {
         </div>
 
         <form onSubmit={handleAuth} className="space-y-4">
+          {/* First Name & Last Name (Only shown when Sign Up is active) */}
+          {isSignUp && (
+            <div className="grid grid-cols-2 gap-2">
+              <div className="relative">
+                <User className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder="First Name"
+                  className="pl-9"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  required={isSignUp}
+                />
+              </div>
+              <div className="relative">
+                <User className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder="Last Name"
+                  className="pl-9"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  required={isSignUp}
+                />
+              </div>
+            </div>
+          )}
+
           <div className="relative">
             <Mail className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
             <Input
