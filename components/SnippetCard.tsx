@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import { Edit2, Trash2, Loader2, AlertTriangle, X, Star } from "lucide-react";
+import { Edit2, Trash2, Loader2, AlertTriangle, X, Star, User } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import CodeBlock from "./COdeBlock";
+import CodeBlock from "@/components/COdeBlock";
 
 export interface Snippet {
   id: string;
@@ -18,6 +18,10 @@ export interface Snippet {
   is_public: boolean;
   user_id?: string;
   created_at?: string;
+  user_profiles?: {
+    first_name?: string;
+    last_name?: string;
+  };
 }
 
 interface SnippetCardProps {
@@ -28,6 +32,7 @@ interface SnippetCardProps {
 export default function SnippetCard({ snippet, onUpdate }: SnippetCardProps) {
   if (!snippet) return null;
 
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -42,12 +47,14 @@ export default function SnippetCard({ snippet, onUpdate }: SnippetCardProps) {
   const [favLoading, setFavLoading] = useState(false);
 
   useEffect(() => {
-    checkIfFavorited();
+    fetchUserAndFavoriteStatus();
   }, [snippet.id]);
 
-  const checkIfFavorited = async () => {
+  const fetchUserAndFavoriteStatus = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
+
+    setCurrentUserId(user.id);
 
     const { data } = await supabase
       .from("favorites")
@@ -70,7 +77,6 @@ export default function SnippetCard({ snippet, onUpdate }: SnippetCardProps) {
     }
 
     if (isFavorited) {
-      // Remove from favorites
       const { error } = await supabase
         .from("favorites")
         .delete()
@@ -84,7 +90,6 @@ export default function SnippetCard({ snippet, onUpdate }: SnippetCardProps) {
         onUpdate?.();
       }
     } else {
-      // Add to favorites
       const { error } = await supabase
         .from("favorites")
         .insert({ user_id: user.id, snippet_id: snippet.id });
@@ -138,67 +143,101 @@ export default function SnippetCard({ snippet, onUpdate }: SnippetCardProps) {
     setLoading(false);
   };
 
+  // Upload කරපු කෙනා විතරක්දැයි පරීක්ෂා කිරීම
+  const isOwner = currentUserId && snippet.user_id && currentUserId === snippet.user_id;
+
   return (
-    <div className="p-4 border border-border rounded-xl bg-card space-y-3 relative group">
-      {/* Top Section with Title, Edit/Delete & Favorite */}
-      <div className="flex justify-between items-start gap-2">
-        <div>
-          <h3 className="font-semibold">{snippet.title}</h3>
-          {snippet.description && (
-            <p className="text-xs text-muted-foreground">{snippet.description}</p>
-          )}
+    <div className="p-4 border border-border rounded-xl bg-card space-y-3 relative group flex flex-col justify-between">
+      <div className="space-y-3">
+        {/* Header Section */}
+        <div className="flex justify-between items-start gap-2">
+          <div>
+            <h3 className="font-semibold text-sm">{snippet.title}</h3>
+            {snippet.description && (
+              <p className="text-xs text-muted-foreground mt-0.5">{snippet.description}</p>
+            )}
+          </div>
+
+          <div className="flex items-center gap-1">
+            {/* Favorite Star Button */}
+            <button
+              onClick={toggleFavorite}
+              disabled={favLoading}
+              className={`p-1.5 rounded-md transition-colors ${
+                isFavorited
+                  ? "text-amber-400 bg-amber-400/10 hover:bg-amber-400/20"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              }`}
+              title={isFavorited ? "Remove Favorite" : "Add to Favorites"}
+            >
+              <Star className={`w-4 h-4 ${isFavorited ? "fill-amber-400" : ""}`} />
+            </button>
+
+            {/* Edit / Delete Buttons */}
+            {isOwner && (
+              <>
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="p-1.5 hover:bg-muted rounded-md text-muted-foreground hover:text-foreground transition-colors"
+                  title="Edit Snippet"
+                >
+                  <Edit2 className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => setShowDeleteModal(true)}
+                  className="p-1.5 hover:bg-destructive/10 rounded-md text-muted-foreground hover:text-destructive transition-colors"
+                  title="Delete Snippet"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </>
+            )}
+          </div>
         </div>
 
-        <div className="flex items-center gap-1">
-          {/* Favorite Button */}
-          <button
-            onClick={toggleFavorite}
-            disabled={favLoading}
-            className={`p-1.5 rounded-md transition-colors ${
-              isFavorited
-                ? "text-amber-400 bg-amber-400/10 hover:bg-amber-400/20"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground"
-            }`}
-            title={isFavorited ? "Remove Favorite" : "Add to Favorites"}
-          >
-            <Star className={`w-4 h-4 ${isFavorited ? "fill-amber-400" : ""}`} />
-          </button>
+        {/* Code Block */}
+        <CodeBlock
+          code={snippet.code_content}
+          language={snippet.language || "text"}
+        />
 
-          {/* Edit / Delete Buttons */}
-          <button
-            onClick={() => setIsEditing(true)}
-            className="p-1.5 hover:bg-muted rounded-md text-muted-foreground hover:text-foreground transition-colors"
-            title="Edit Snippet"
-          >
-            <Edit2 className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => setShowDeleteModal(true)}
-            className="p-1.5 hover:bg-destructive/10 rounded-md text-muted-foreground hover:text-destructive transition-colors"
-            title="Delete Snippet"
-          >
-            <Trash2 className="w-4 h-4" />
-          </button>
-        </div>
+        {/* Tags */}
+        {snippet.tags && snippet.tags.length > 0 && (
+          <div className="flex flex-wrap gap-1 pt-1">
+            {snippet.tags.map((tag, idx) => (
+              <span key={idx} className="text-[10px] bg-muted px-2 py-0.5 rounded-md text-muted-foreground">
+                #{tag}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Code Block */}
-      <CodeBlock
-        code={snippet.code_content}
-        language={snippet.language || "javascript"}
-      />
+      {/* Shared By Author Info (Card එකෙහි පතුලේ) */}
+      {snippet.user_profiles && (
+        <div className="pt-2 border-t border-border/50 flex items-center gap-1.5 text-xs text-muted-foreground mt-2">
+          <User className="w-3.5 h-3.5" />
+          <span>
+            Shared by:{" "}
+            <strong className="font-medium text-foreground">
+              {snippet.user_profiles.first_name
+                ? `${snippet.user_profiles.first_name} ${snippet.user_profiles.last_name || ""}`.trim()
+                : "Anonymous Developer"}
+            </strong>
+          </span>
+        </div>
+      )}
 
-      {/* Delete Confirmation Modal */}
+      {/* Delete Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-card p-6 rounded-2xl border border-border w-full max-w-md space-y-4 shadow-2xl relative animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-card p-6 rounded-2xl border border-border w-full max-w-md space-y-4 shadow-2xl relative">
             <button
               onClick={() => setShowDeleteModal(false)}
               className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
             >
               <X className="w-4 h-4" />
             </button>
-
             <div className="flex items-center gap-3">
               <div className="p-3 bg-destructive/10 text-destructive rounded-xl">
                 <AlertTriangle className="w-6 h-6" />
@@ -208,28 +247,16 @@ export default function SnippetCard({ snippet, onUpdate }: SnippetCardProps) {
                 <p className="text-xs text-muted-foreground">This action cannot be undone.</p>
               </div>
             </div>
-
             <p className="text-sm text-muted-foreground">
               Are you sure you want to delete <strong className="text-foreground">"{snippet.title}"</strong>?
             </p>
-
             <div className="flex justify-end gap-2 pt-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setShowDeleteModal(false)}
-                disabled={isDeleting}
-              >
+              <Button type="button" variant="outline" onClick={() => setShowDeleteModal(false)}>
                 Cancel
               </Button>
-              <Button
-                type="button"
-                variant="destructive"
-                onClick={handleDelete}
-                disabled={isDeleting}
-              >
+              <Button type="button" variant="destructive" onClick={handleDelete} disabled={isDeleting}>
                 {isDeleting ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : null}
-                Delete Snippet
+                Delete
               </Button>
             </div>
           </div>
@@ -239,13 +266,10 @@ export default function SnippetCard({ snippet, onUpdate }: SnippetCardProps) {
       {/* Edit Modal */}
       {isEditing && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-card p-6 rounded-2xl border border-border w-full max-w-lg space-y-4 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-card p-6 rounded-2xl border border-border w-full max-w-lg space-y-4 shadow-2xl">
             <div className="flex justify-between items-center">
               <h2 className="text-lg font-bold">Edit Snippet</h2>
-              <button
-                onClick={() => setIsEditing(false)}
-                className="text-muted-foreground hover:text-foreground"
-              >
+              <button onClick={() => setIsEditing(false)} className="text-muted-foreground hover:text-foreground">
                 <X className="w-4 h-4" />
               </button>
             </div>

@@ -1,52 +1,47 @@
 "use client";
 
 import { useState } from "react";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Check, Copy } from "lucide-react";
-import { toast } from "sonner";
 
 interface CodeBlockProps {
   code: string;
   language?: string;
 }
 
-export default function CodeBlock({ code, language = "javascript" }: CodeBlockProps) {
+export default function CodeBlock({ code, language = "text" }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(code);
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(code);
     setCopied(true);
-    toast.success("Code copied to clipboard!");
     setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <div className="relative group rounded-xl overflow-hidden border border-border bg-slate-950">
-      <div className="flex items-center justify-between px-4 py-1.5 bg-slate-900 border-b border-slate-800 text-xs text-slate-400 font-mono">
-        <span>{language.toLowerCase()}</span>
+    <div className="relative rounded-lg overflow-hidden bg-slate-950 text-slate-50 border border-slate-800 text-xs font-mono">
+      <div className="flex justify-between items-center px-3 py-1.5 bg-slate-900 border-b border-slate-800 text-slate-400 text-[11px]">
+        <span className="lowercase">{language}</span>
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1 hover:text-white transition-colors"
+          className="flex items-center gap-1.5 hover:text-slate-200 transition-colors px-1.5 py-0.5 rounded"
           title="Copy Code"
         >
-          {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-          <span>{copied ? "Copied" : "Copy"}</span>
+          {copied ? (
+            <>
+              <Check className="w-3.5 h-3.5 text-green-400" />
+              <span className="text-green-400">Copied</span>
+            </>
+          ) : (
+            <>
+              <Copy className="w-3.5 h-3.5" />
+              <span>Copy</span>
+            </>
+          )}
         </button>
       </div>
-
-      <SyntaxHighlighter
-        language={language.toLowerCase()}
-        style={oneDark}
-        customStyle={{
-          margin: 0,
-          padding: "1rem",
-          fontSize: "0.8rem",
-          backgroundColor: "transparent",
-        }}
-      >
-        {code}
-      </SyntaxHighlighter>
+      <pre className="p-3 overflow-x-auto text-slate-200">
+        <code>{code}</code>
+      </pre>
     </div>
   );
 }
