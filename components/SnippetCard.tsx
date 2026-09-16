@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { Edit2, Trash2, Loader2, AlertTriangle, X } from "lucide-react";
+import { Edit2, Trash2, Loader2, AlertTriangle, X, Star } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,6 +37,67 @@ export default function SnippetCard({ snippet, onUpdate }: SnippetCardProps) {
   const [description, setDescription] = useState(snippet.description || "");
   const [codeContent, setCodeContent] = useState(snippet.code_content || "");
   const [isPublic, setIsPublic] = useState(snippet.is_public ?? false);
+
+  const [isFavorited, setIsFavorited] = useState(false);
+  const [favLoading, setFavLoading] = useState(false);
+
+  useEffect(() => {
+    checkIfFavorited();
+  }, [snippet.id]);
+
+  const checkIfFavorited = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data } = await supabase
+      .from("favorites")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("snippet_id", snippet.id)
+      .single();
+
+    if (data) setIsFavorited(true);
+  };
+
+  const toggleFavorite = async () => {
+    setFavLoading(true);
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      toast.error("Please login to favorite snippets!");
+      setFavLoading(false);
+      return;
+    }
+
+    if (isFavorited) {
+      // Remove from favorites
+      const { error } = await supabase
+        .from("favorites")
+        .delete()
+        .eq("user_id", user.id)
+        .eq("snippet_id", snippet.id);
+
+      if (error) toast.error(error.message);
+      else {
+        setIsFavorited(false);
+        toast.success("Removed from favorites");
+        onUpdate?.();
+      }
+    } else {
+      // Add to favorites
+      const { error } = await supabase
+        .from("favorites")
+        .insert({ user_id: user.id, snippet_id: snippet.id });
+
+      if (error) toast.error(error.message);
+      else {
+        setIsFavorited(true);
+        toast.success("Added to favorites!");
+        onUpdate?.();
+      }
+    }
+    setFavLoading(false);
+  };
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -79,30 +140,55 @@ export default function SnippetCard({ snippet, onUpdate }: SnippetCardProps) {
 
   return (
     <div className="p-4 border border-border rounded-xl bg-card space-y-3 relative group">
-      <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-        <button
-          onClick={() => setIsEditing(true)}
-          className="p-1.5 hover:bg-muted rounded-md text-muted-foreground hover:text-foreground transition-colors"
-          title="Edit Snippet"
-        >
-          <Edit2 className="w-4 h-4" />
-        </button>
-        <button
-          onClick={() => setShowDeleteModal(true)}
-          className="p-1.5 hover:bg-destructive/10 rounded-md text-muted-foreground hover:text-destructive transition-colors"
-          title="Delete Snippet"
-        >
-          <Trash2 className="w-4 h-4" />
-        </button>
+      {/* Top Section with Title, Edit/Delete & Favorite */}
+      <div className="flex justify-between items-start gap-2">
+        <div>
+          <h3 className="font-semibold">{snippet.title}</h3>
+          {snippet.description && (
+            <p className="text-xs text-muted-foreground">{snippet.description}</p>
+          )}
+        </div>
+
+        <div className="flex items-center gap-1">
+          {/* Favorite Button */}
+          <button
+            onClick={toggleFavorite}
+            disabled={favLoading}
+            className={`p-1.5 rounded-md transition-colors ${
+              isFavorited
+                ? "text-amber-400 bg-amber-400/10 hover:bg-amber-400/20"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+            }`}
+            title={isFavorited ? "Remove Favorite" : "Add to Favorites"}
+          >
+            <Star className={`w-4 h-4 ${isFavorited ? "fill-amber-400" : ""}`} />
+          </button>
+
+          {/* Edit / Delete Buttons */}
+          <button
+            onClick={() => setIsEditing(true)}
+            className="p-1.5 hover:bg-muted rounded-md text-muted-foreground hover:text-foreground transition-colors"
+            title="Edit Snippet"
+          >
+            <Edit2 className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => setShowDeleteModal(true)}
+            className="p-1.5 hover:bg-destructive/10 rounded-md text-muted-foreground hover:text-destructive transition-colors"
+            title="Delete Snippet"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
-      <h3 className="font-semibold">{snippet.title}</h3>
-      {snippet.description && <p className="text-xs text-muted-foreground">{snippet.description}</p>}
+      {/* Code Block */}
       <CodeBlock
         code={snippet.code_content}
         language={snippet.language || "javascript"}
       />
 
+      {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-card p-6 rounded-2xl border border-border w-full max-w-md space-y-4 shadow-2xl relative animate-in fade-in zoom-in-95 duration-150">
@@ -150,6 +236,7 @@ export default function SnippetCard({ snippet, onUpdate }: SnippetCardProps) {
         </div>
       )}
 
+      {/* Edit Modal */}
       {isEditing && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-card p-6 rounded-2xl border border-border w-full max-w-lg space-y-4 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
