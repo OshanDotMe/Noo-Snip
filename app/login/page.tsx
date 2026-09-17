@@ -70,6 +70,7 @@ export default function LoginPage() {
         }
 
         toast.success("Access Granted to SnippetVault!");
+        router.refresh();
         router.push("/");
       }
     } catch (err: any) {
