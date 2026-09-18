@@ -99,7 +99,6 @@ export default function SettingsPage() {
             </div>
           ) : (
             <div className="space-y-6">
-              {/* Profile Section */}
               <div className="border border-border rounded-xl p-6 bg-card space-y-6">
                 <div className="flex items-center gap-3 border-b border-border pb-4">
                   <User className="w-5 h-5 text-primary" />
@@ -159,7 +158,6 @@ export default function SettingsPage() {
                 </form>
               </div>
 
-              {/* Account Security & Sign Out Section */}
               <div className="border border-border rounded-xl p-6 bg-card space-y-4">
                 <div className="flex items-center gap-3 border-b border-border pb-4">
                   <Shield className="w-5 h-5 text-primary" />
