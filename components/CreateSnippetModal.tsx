@@ -42,38 +42,58 @@ export default function CreateSnippetModal({
   const handleCreateSnippet = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-  
-    const { data: { user } } = await supabase.auth.getUser();
-  
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
     if (!user) {
       toast.error("User not authenticated!");
       setLoading(false);
       return;
     }
-  
-    const tagsArray = tags ? tags.split(",").map((t) => t.trim()) : [];
-  
-    const { error } = await supabase.from("snippets").insert([
-      {
-        title,
-        description,
-        language,
-        code_content: codeContent,
-        tags: tagsArray,
-        collection_id: collectionId || null,
-        is_public: isPublic,
-        user_id: user.id,
-      },
-    ]);
-  
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success("Snippet saved successfully!");
+
+    const tagsArray = tags ? tags.split(",").map((t) => t.trim()).filter(Boolean) : [];
+
+    try {
+      // Client-side direct insert වෙනුවට Vector embeddings හදන /api/snippets route එකට යැවීම
+      const response = await fetch("/api/snippets", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title,
+          description,
+          language,
+          code_content: codeContent,
+          tags: tagsArray,
+          collection_id: collectionId || null,
+          is_public: isPublic,
+          user_id: user.id,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to save snippet");
+      }
+
+      toast.success("Snippet saved successfully with AI Vector!");
+
+      // Form එක Reset කිරීම
+      setTitle("");
+      setDescription("");
+      setCodeContent("");
+      setTags("");
+      setCollectionId("");
+
       setOpen(false);
       if (onCreated) onCreated();
+    } catch (err: any) {
+      toast.error(err.message || "Something went wrong!");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (

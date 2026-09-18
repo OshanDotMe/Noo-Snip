@@ -4,13 +4,24 @@ import { supabase } from "@/lib/supabase";
 
 export async function POST(req: Request) {
   try {
-    const { title, description, language, code_content, tags } = await req.json();
+    const {
+      title,
+      description,
+      language,
+      code_content,
+      tags,
+      collection_id,
+      is_public,
+      user_id,
+    } = await req.json();
 
     if (!title || !code_content) {
       return NextResponse.json({ error: "Title and Code are required" }, { status: 400 });
     }
 
-    const textToEmbed = `Title: ${title}\nDescription: ${description || ""}\nLanguage: ${language}\nTags: ${tags ? tags.join(", ") : ""}\nCode:\n${code_content}`;
+    const safeLanguage = language ? language.toLowerCase() : "text";
+
+    const textToEmbed = `Title: ${title}\nDescription: ${description || ""}\nLanguage: ${safeLanguage}\nTags: ${tags ? tags.join(", ") : ""}\nCode:\n${code_content}`;
 
     const extractor = await pipeline("feature-extraction", "Xenova/all-MiniLM-L6-v2");
     const output = await extractor(textToEmbed, { pooling: "mean", normalize: true });
@@ -22,9 +33,12 @@ export async function POST(req: Request) {
         {
           title,
           description: description || null,
-          language: language.toLowerCase(),
+          language: safeLanguage,
           code_content,
           tags: tags || [],
+          collection_id: collection_id || null,
+          is_public: is_public ?? true,
+          user_id: user_id || null,
           embedding,
         },
       ])
