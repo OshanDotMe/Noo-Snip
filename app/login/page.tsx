@@ -66,7 +66,7 @@ export default function LoginPage() {
           return;
         }
 
-        toast.success("Access Granted to SnippetVault!");
+        toast.success("Access Granted to NooSnip!");
         router.refresh();
         router.push("/");
       }
