@@ -44,12 +44,10 @@ export default function Dashboard() {
     fetchMySnippets();
   }, []);
 
-  // Language List extracted from snippets
   const languages = Array.from(
     new Set(snippets.map((s) => s.language).filter(Boolean))
   );
 
-  // Filtered Snippets Search & Language
   const filteredSnippets = snippets.filter((snippet) => {
     const matchesSearch =
       snippet.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -71,7 +69,6 @@ export default function Dashboard() {
       <div className="flex-1 flex flex-col">
         <Header />
         <main className="p-8 space-y-6">
-          {/* Header Title */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <h1 className="text-2xl font-bold tracking-tight">All Snippets</h1>
@@ -80,14 +77,12 @@ export default function Dashboard() {
               </p>
             </div>
 
-            {/* Total Snippets Count Badge */}
             <div className="flex items-center gap-2 text-xs font-medium bg-muted/60 px-3 py-1.5 rounded-lg w-fit">
               <Code2 className="w-4 h-4 text-primary" />
               <span>{snippets.length} Total Snippets</span>
             </div>
           </div>
 
-          {/* Search & Filter Bar */}
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -99,7 +94,6 @@ export default function Dashboard() {
               />
             </div>
 
-            {/* Language Filter */}
             <div className="flex items-center gap-2">
               <Filter className="w-4 h-4 text-muted-foreground" />
               <select
@@ -117,7 +111,6 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Snippet Grid */}
           {loading ? (
             <div className="text-muted-foreground text-sm py-8 text-center">
               Loading your snippets...
