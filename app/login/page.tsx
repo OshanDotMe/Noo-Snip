@@ -25,7 +25,6 @@ export default function LoginPage() {
     const cleanEmail = email.trim();
     const cleanPassword = password.trim();
 
-    // 1. PIN Validation Check
     if (vaultPin.length !== 6 || isNaN(Number(vaultPin))) {
       toast.error("Security PIN must be exactly 6 digits!");
       setLoading(false);
@@ -34,7 +33,6 @@ export default function LoginPage() {
 
     try {
       if (isSignUp) {
-        // Sign Up Logic
         const { data: authData, error: authError } = await supabase.auth.signUp({
           email: cleanEmail,
           password: cleanPassword,
@@ -52,7 +50,6 @@ export default function LoginPage() {
         toast.success("Account created successfully! Please log in.");
         setIsSignUp(false);
       } else {
-        // Log In Logic
         const { data: authData, error: loginError } = await supabase.auth.signInWithPassword({
           email: cleanEmail,
           password: cleanPassword,
@@ -94,7 +91,6 @@ export default function LoginPage() {
         </div>
 
         <form onSubmit={handleAuth} className="space-y-4">
-          {/* First Name & Last Name (Only shown when Sign Up is active) */}
           {isSignUp && (
             <div className="grid grid-cols-2 gap-2">
               <div className="relative">
