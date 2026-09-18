@@ -30,7 +30,6 @@ export default function FavoritesPage() {
     if (error) {
       console.error("Error fetching favorites:", error.message);
     } else if (data) {
-      // Favorite record එක තුළින් snippet object එක වෙන් කරගැනීම
       const favoritedSnippets = data
         .map((fav: any) => fav.snippets)
         .filter(Boolean);
