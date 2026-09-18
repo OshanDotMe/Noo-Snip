@@ -143,13 +143,11 @@ export default function SnippetCard({ snippet, onUpdate }: SnippetCardProps) {
     setLoading(false);
   };
 
-  // Upload කරපු කෙනා විතරක්දැයි පරීක්ෂා කිරීම
   const isOwner = currentUserId && snippet.user_id && currentUserId === snippet.user_id;
 
   return (
     <div className="p-4 border border-border rounded-xl bg-card space-y-3 relative group flex flex-col justify-between">
       <div className="space-y-3">
-        {/* Header Section */}
         <div className="flex justify-between items-start gap-2">
           <div>
             <h3 className="font-semibold text-sm">{snippet.title}</h3>
@@ -159,7 +157,6 @@ export default function SnippetCard({ snippet, onUpdate }: SnippetCardProps) {
           </div>
 
           <div className="flex items-center gap-1">
-            {/* Favorite Star Button */}
             <button
               onClick={toggleFavorite}
               disabled={favLoading}
@@ -173,7 +170,6 @@ export default function SnippetCard({ snippet, onUpdate }: SnippetCardProps) {
               <Star className={`w-4 h-4 ${isFavorited ? "fill-amber-400" : ""}`} />
             </button>
 
-            {/* Edit / Delete Buttons */}
             {isOwner && (
               <>
                 <button
@@ -195,13 +191,11 @@ export default function SnippetCard({ snippet, onUpdate }: SnippetCardProps) {
           </div>
         </div>
 
-        {/* Code Block */}
         <CodeBlock
           code={snippet.code_content}
           language={snippet.language || "text"}
         />
 
-        {/* Tags */}
         {snippet.tags && snippet.tags.length > 0 && (
           <div className="flex flex-wrap gap-1 pt-1">
             {snippet.tags.map((tag, idx) => (
@@ -213,7 +207,6 @@ export default function SnippetCard({ snippet, onUpdate }: SnippetCardProps) {
         )}
       </div>
 
-      {/* Shared By Author Info (Card එකෙහි පතුලේ) */}
       {snippet.user_profiles && (
         <div className="pt-2 border-t border-border/50 flex items-center gap-1.5 text-xs text-muted-foreground mt-2">
           <User className="w-3.5 h-3.5" />
@@ -228,7 +221,6 @@ export default function SnippetCard({ snippet, onUpdate }: SnippetCardProps) {
         </div>
       )}
 
-      {/* Delete Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-card p-6 rounded-2xl border border-border w-full max-w-md space-y-4 shadow-2xl relative">
@@ -263,7 +255,6 @@ export default function SnippetCard({ snippet, onUpdate }: SnippetCardProps) {
         </div>
       )}
 
-      {/* Edit Modal */}
       {isEditing && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-card p-6 rounded-2xl border border-border w-full max-w-lg space-y-4 shadow-2xl">

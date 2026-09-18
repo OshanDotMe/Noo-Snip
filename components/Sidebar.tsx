@@ -25,7 +25,6 @@ export default function Sidebar() {
           <span className="font-bold text-lg tracking-tight">SnippetVault</span>
         </div>
 
-        {/* New Snippet Trigger Button with Modal */}
         <CreateSnippetModal />
 
         <nav className="space-y-1">
