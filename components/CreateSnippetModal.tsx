@@ -56,7 +56,6 @@ export default function CreateSnippetModal({
     const tagsArray = tags ? tags.split(",").map((t) => t.trim()).filter(Boolean) : [];
 
     try {
-      // Client-side direct insert වෙනුවට Vector embeddings හදන /api/snippets route එකට යැවීම
       const response = await fetch("/api/snippets", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -79,8 +78,6 @@ export default function CreateSnippetModal({
       }
 
       toast.success("Snippet saved successfully with AI Vector!");
-
-      // Form එක Reset කිරීම
       setTitle("");
       setDescription("");
       setCodeContent("");
