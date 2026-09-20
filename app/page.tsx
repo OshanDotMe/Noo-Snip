@@ -73,7 +73,7 @@ export default function Dashboard() {
             <div>
               <h1 className="text-2xl font-bold tracking-tight">All Snippets</h1>
               <p className="text-sm text-muted-foreground">
-                Manage and organize your personal code snippets and prompts.
+                Manage and organize your personal code snippets and prompts
               </p>
             </div>
 
