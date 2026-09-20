@@ -52,7 +52,7 @@ export default function ExplorePage() {
             <div>
               <h1 className="text-2xl font-bold tracking-tight">Community Snippets</h1>
               <p className="text-sm text-muted-foreground">
-                Explore code snippets and prompts shared by other developers.
+                Explore code snippets and prompts shared by other developers
               </p>
             </div>
           </div>
