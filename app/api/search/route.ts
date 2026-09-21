@@ -8,6 +8,10 @@ import { supabase } from "@/lib/supabase";
 env.allowLocalModels = false;
 env.useFS = false;
 
+if (env.backends && env.backends.onnx) {
+  env.backends.onnx.wasm.numThreads = 1;
+}
+
 export async function POST(req: Request) {
   try {
     const { query } = await req.json();
