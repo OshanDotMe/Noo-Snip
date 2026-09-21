@@ -5,8 +5,10 @@ import { NextResponse } from "next/server";
 import { pipeline, env } from "@xenova/transformers";
 import { supabase } from "@/lib/supabase";
 
+
 env.allowLocalModels = false;
 env.useFS = false;
+env.cacheDir = "/tmp/.cache";
 
 if (env.backends && env.backends.onnx) {
   env.backends.onnx.wasm.numThreads = 1;
