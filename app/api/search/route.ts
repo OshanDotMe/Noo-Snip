@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { NextResponse } from "next/server";
 import { pipeline } from "@xenova/transformers";
 import { supabase } from "@/lib/supabase";
