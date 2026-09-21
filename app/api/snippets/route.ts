@@ -1,8 +1,12 @@
 export const dynamic = "force-dynamic";
+export const maxDuration = 30;
 
 import { NextResponse } from "next/server";
-import { pipeline } from "@xenova/transformers";
+import { env, pipeline } from "@xenova/transformers";
 import { supabase } from "@/lib/supabase";
+
+env.allowLocalModels = false;
+env.useFS = false;
 
 export async function POST(req: Request) {
   try {
