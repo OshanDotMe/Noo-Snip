@@ -1,9 +1,14 @@
+// @ts-nocheck
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  serverExternalPackages: ['@xenova/transformers', 'onnxruntime-node'],
-  outputFileTracingIncludes: {
-    '/api/**/*': ['./node_modules/onnxruntime-node/bin/napi-v6/linux/**'],
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      'sharp$': false,
+      'onnxruntime-node$': false,
+    };
+    return config;
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;
