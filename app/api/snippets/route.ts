@@ -2,11 +2,16 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 30;
 
 import { NextResponse } from "next/server";
-import { env, pipeline } from "@xenova/transformers";
+import { pipeline, env } from "@xenova/transformers";
 import { supabase } from "@/lib/supabase";
 
 env.allowLocalModels = false;
 env.useFS = false;
+env.cacheDir = "/tmp/.cache";
+
+if (env.backends && env.backends.onnx) {
+  env.backends.onnx.wasm.numThreads = 1;
+}
 
 export async function POST(req: Request) {
   try {
