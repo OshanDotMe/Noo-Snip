@@ -58,7 +58,7 @@ export default function ExplorePage() {
           </div>
 
           {loading ? (
-            <div className="text-muted-foreground text-sm">Loading public snippets..</div>
+            <div className="text-muted-foreground text-sm">Loading public snippets...</div>
           ) : snippets.length === 0 ? (
             <div className="p-12 border border-dashed border-border rounded-xl text-center space-y-2">
               <Code2 className="w-10 h-10 mx-auto text-muted-foreground opacity-50" />
