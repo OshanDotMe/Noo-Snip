@@ -113,7 +113,7 @@ export default function Dashboard() {
 
           {loading ? (
             <div className="text-muted-foreground text-sm py-8 text-center">
-              Loading your snippets...
+              Loading your snippets....
             </div>
           ) : filteredSnippets.length === 0 ? (
             <div className="p-12 border border-dashed border-border rounded-xl text-center space-y-3">
