@@ -56,7 +56,7 @@ export default function CollectionsPage() {
             <div>
               <h1 className="text-2xl font-bold tracking-tight">Collections</h1>
               <p className="text-sm text-muted-foreground">
-                Organize your snippets into categories.
+                Organize your snippets into categories
               </p>
             </div>
             <div>
