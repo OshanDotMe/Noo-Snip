@@ -13,6 +13,15 @@ if (env.backends && env.backends.onnx) {
   env.backends.onnx.wasm.numThreads = 1;
 }
 
+let extractorPipeline: any = null;
+
+async function getExtractor() {
+  if (!extractorPipeline) {
+    extractorPipeline = await pipeline("feature-extraction", "Xenova/all-MiniLM-L6-v2");
+  }
+  return extractorPipeline;
+}
+
 export async function POST(req: Request) {
   try {
     const {
@@ -32,9 +41,14 @@ export async function POST(req: Request) {
 
     const safeLanguage = language ? language.toLowerCase() : "text";
 
-    const textToEmbed = `Title: ${title}\nDescription: ${description || ""}\nLanguage: ${safeLanguage}\nTags: ${tags ? tags.join(", ") : ""}\nCode:\n${code_content}`;
+    const codeSnippetPreview = code_content
+      .split("\n")
+      .slice(0, 15)
+      .join("\n");
 
-    const extractor = await pipeline("feature-extraction", "Xenova/all-MiniLM-L6-v2");
+    const textToEmbed = `Title: ${title}\nDescription: ${description || ""}\nLanguage: ${safeLanguage}\nTags: ${tags ? tags.join(", ") : ""}\nCode Preview:\n${codeSnippetPreview}`;
+
+    const extractor = await getExtractor();
     const output = await extractor(textToEmbed, { pooling: "mean", normalize: true });
     const embedding = Array.from(output.data);
 
