@@ -5,14 +5,17 @@ import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import SnippetCard, { Snippet } from "@/components/SnippetCard";
 import { supabase } from "@/lib/supabase";
-import { Search, Filter, Code2, Sparkles } from "lucide-react";
+import { Search, Filter, Code2, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
+
+const ITEMS_PER_PAGE = 6; 
 
 export default function Dashboard() {
   const [snippets, setSnippets] = useState<Snippet[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState("all");
+  const [page, setPage] = useState(1);
 
   const fetchMySnippets = async () => {
     setLoading(true);
@@ -44,6 +47,10 @@ export default function Dashboard() {
     fetchMySnippets();
   }, []);
 
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery, selectedLanguage]);
+
   const languages = Array.from(
     new Set(snippets.map((s) => s.language).filter(Boolean))
   );
@@ -62,6 +69,20 @@ export default function Dashboard() {
 
     return matchesSearch && matchesLang;
   });
+
+  const totalPages = Math.ceil(filteredSnippets.length / ITEMS_PER_PAGE) || 1;
+  const paginatedSnippets = filteredSnippets.slice(
+    (page - 1) * ITEMS_PER_PAGE,
+    page * ITEMS_PER_PAGE
+  );
+
+  const handleNextPage = () => {
+    if (page < totalPages) setPage((prev) => prev + 1);
+  };
+
+  const handlePrevPage = () => {
+    if (page > 1) setPage((prev) => prev - 1);
+  };
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -125,15 +146,46 @@ export default function Dashboard() {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {filteredSnippets.map((snippet) => (
-                <SnippetCard
-                  key={snippet.id}
-                  snippet={snippet}
-                  onUpdate={fetchMySnippets}
-                />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {paginatedSnippets.map((snippet) => (
+                  <SnippetCard
+                    key={snippet.id}
+                    snippet={snippet}
+                    onUpdate={fetchMySnippets}
+                  />
+                ))}
+              </div>
+
+              {totalPages > 1 && (
+                <div className="flex items-center justify-between pt-6 border-t border-border">
+                  <p className="text-sm text-muted-foreground">
+                    Page <span className="font-medium text-foreground">{page}</span> of{" "}
+                    <span className="font-medium text-foreground">{totalPages}</span>
+                  </p>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={handlePrevPage}
+                      disabled={page === 1}
+                      className="flex items-center gap-1 px-3 py-1.5 text-sm border border-border rounded-lg hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed transition"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                      Previous
+                    </button>
+
+                    <button
+                      onClick={handleNextPage}
+                      disabled={page >= totalPages}
+                      className="flex items-center gap-1 px-3 py-1.5 text-sm border border-border rounded-lg hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed transition"
+                    >
+                      Next
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </main>
       </div>
