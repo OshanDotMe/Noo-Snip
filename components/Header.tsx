@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Search, Command } from "lucide-react";
 import CommandMenu from "@/components/CommandMenu";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -27,6 +28,9 @@ export default function Header() {
           OA
         </div>
       </div> */}
+      <div className="flex items-center gap-3">
+        <ThemeToggle />
+      </div>
     </header>
   );
 }
