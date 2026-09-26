@@ -88,7 +88,7 @@ export default function SettingsPage() {
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
             <p className="text-sm text-muted-foreground">
-              Manage your profile preferences and account settings.
+              Manage your profile preferences and account settings
             </p>
           </div>
 
