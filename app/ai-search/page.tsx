@@ -59,10 +59,18 @@ export default function AISearchPage() {
               Search your code snippets using natural language descriptions (e.g. "How to save data in localstorage").
             </p>
           </div>
+          <p className="text-muted-foreground text-sm">
+            Tip: AI Search works best with natural language queries/questions rather than single keywords.
+          </p>
+          <p className="text-muted-foreground text-sm">
+            No snippets found.
+
+Try searching in full sentences (e.g. "How to set up Supabase client in Next.js" instead of "Supabase").
+          </p>
 
           <form onSubmit={handleSearch} className="flex gap-2">
             <Input
-              placeholder="Ask anything about your code snippets..."
+              placeholder='Try asking: "How to handle search input debouncing in React?"'
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="h-12 text-base"
@@ -72,6 +80,7 @@ export default function AISearchPage() {
               <span>Search</span>
             </Button>
           </form>
+          
 
           {searched && (
             <div className="space-y-4 pt-4">
