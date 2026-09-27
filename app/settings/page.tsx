@@ -82,26 +82,26 @@ export default function SettingsPage() {
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar />
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-w-0">
         <Header />
-        <main className="p-8 max-w-4xl space-y-8">
+        <main className="p-4 sm:p-6 md:p-8 max-w-4xl space-y-6 sm:space-y-8 w-full mx-auto">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
-            <p className="text-sm text-muted-foreground">
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight">Settings</h1>
+            <p className="text-xs sm:text-sm text-muted-foreground">
               Manage your profile preferences and account settings
             </p>
           </div>
 
           {loading ? (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground py-8">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground py-8 justify-center sm:justify-start">
               <Loader2 className="w-4 h-4 animate-spin" />
               Loading settings...
             </div>
           ) : (
             <div className="space-y-6">
-              <div className="border border-border rounded-xl p-6 bg-card space-y-6">
+              <div className="border border-border rounded-xl p-4 sm:p-6 bg-card space-y-5 sm:space-y-6 shadow-sm">
                 <div className="flex items-center gap-3 border-b border-border pb-4">
-                  <User className="w-5 h-5 text-primary" />
+                  <User className="w-5 h-5 text-primary shrink-0" />
                   <div>
                     <h2 className="text-base font-semibold">Profile Information</h2>
                     <p className="text-xs text-muted-foreground">
@@ -118,49 +118,56 @@ export default function SettingsPage() {
                         : "bg-destructive/10 text-destructive border border-destructive/20"
                     }`}
                   >
-                    <CheckCircle className="w-4 h-4" />
-                    {message.text}
+                    <CheckCircle className="w-4 h-4 shrink-0" />
+                    <span>{message.text}</span>
                   </div>
                 )}
 
                 <form onSubmit={handleUpdateProfile} className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-2">
+                    <div className="space-y-1.5">
                       <label className="text-xs font-medium">First Name</label>
                       <Input
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
                         placeholder="John"
+                        className="text-base sm:text-sm h-10 sm:h-9"
                       />
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-1.5">
                       <label className="text-xs font-medium">Last Name</label>
                       <Input
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
                         placeholder="Doe"
+                        className="text-base sm:text-sm h-10 sm:h-9"
                       />
                     </div>
                   </div>
 
-                  <div className="space-y-2">
+                  <div className="space-y-1.5">
                     <label className="text-xs font-medium">Email Address</label>
-                    <Input value={email} disabled className="bg-muted opacity-70 cursor-not-allowed" />
+                    <Input
+                      value={email}
+                      disabled
+                      className="bg-muted opacity-70 cursor-not-allowed text-base sm:text-sm h-10 sm:h-9"
+                    />
                     <p className="text-[11px] text-muted-foreground">
                       Email address is linked to your authentication account and cannot be changed here.
                     </p>
                   </div>
 
-                  <Button type="submit" disabled={saving} className="gap-2">
-                    {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                    Save Changes
-                  </Button>
+                  <div className="pt-2">
+                    <Button type="submit" disabled={saving} className="w-full sm:w-auto gap-2 h-10 sm:h-9 text-sm">
+                      {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                      Save Changes
+                    </Button>
+                  </div>
                 </form>
               </div>
-
-              <div className="border border-border rounded-xl p-6 bg-card space-y-4">
+              <div className="border border-border rounded-xl p-4 sm:p-6 bg-card space-y-4 shadow-sm">
                 <div className="flex items-center gap-3 border-b border-border pb-4">
-                  <Shield className="w-5 h-5 text-primary" />
+                  <Shield className="w-5 h-5 text-primary shrink-0" />
                   <div>
                     <h2 className="text-base font-semibold">Account Actions</h2>
                     <p className="text-xs text-muted-foreground">
@@ -169,14 +176,19 @@ export default function SettingsPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-2">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1">
                   <div>
                     <p className="text-sm font-medium">Sign Out</p>
                     <p className="text-xs text-muted-foreground">
                       Log out from your current session on this browser.
                     </p>
                   </div>
-                  <Button variant="destructive" size="sm" onClick={handleSignOut} className="gap-2">
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={handleSignOut}
+                    className="w-full sm:w-auto gap-2 h-10 sm:h-9 text-xs sm:text-sm"
+                  >
                     <LogOut className="w-4 h-4" />
                     Sign Out
                   </Button>
