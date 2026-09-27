@@ -43,15 +43,12 @@ export default function AISearchPage() {
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-background text-foreground">
-      {/* Responsive Sidebar */}
       <Sidebar />
 
-      {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
         <Header />
 
         <main className="flex-1 p-4 sm:p-6 md:p-8 max-w-6xl w-full mx-auto space-y-6">
-          {/* Header Title Section */}
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-amber-500 font-semibold text-sm sm:text-base">
               <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
@@ -65,7 +62,6 @@ export default function AISearchPage() {
             </p>
           </div>
 
-          {/* AI Search Tip Box */}
           <div className="p-3.5 sm:p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs sm:text-sm text-amber-600 dark:text-amber-400 flex items-start gap-3">
             <Lightbulb className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 mt-0.5 text-amber-500" />
             <div className="space-y-1">
@@ -78,7 +74,6 @@ export default function AISearchPage() {
             </div>
           </div>
 
-          {/* Search Input Form */}
           <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-2 sm:gap-3">
             <div className="relative flex-1">
               <Input
@@ -102,7 +97,6 @@ export default function AISearchPage() {
             </Button>
           </form>
 
-          {/* Results Section */}
           {searched && (
             <div className="space-y-4 pt-2 sm:pt-4">
               <h2 className="text-xs sm:text-sm font-semibold text-muted-foreground">
