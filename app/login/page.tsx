@@ -78,27 +78,27 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
-      <div className="w-full max-w-md p-8 bg-card border border-border rounded-2xl shadow-xl space-y-6">
+    <div className="flex min-h-screen items-center justify-center bg-background p-4 sm:p-6 md:p-8">
+      <div className="w-full max-w-md p-5 sm:p-8 bg-card border border-border rounded-2xl shadow-xl space-y-6">
         <div className="text-center space-y-2">
-          <div className="mx-auto w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center">
-            <ShieldCheck className="w-6 h-6" />
+          <div className="mx-auto w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center">
+            <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
-          <h1 className="text-2xl font-bold">{isSignUp ? "Create Vault Account" : "Vault Access"}</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="text-xl sm:text-2xl font-bold">{isSignUp ? "Create Vault Account" : "Vault Access"}</h1>
+          <p className="text-xs sm:text-sm text-muted-foreground">
             {isSignUp ? "Set up instant 6-digit PIN verification" : "Enter email, password & 6-digit Security PIN"}
           </p>
         </div>
 
         <form onSubmit={handleAuth} className="space-y-4">
           {isSignUp && (
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="relative">
                 <User className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                 <Input
                   type="text"
                   placeholder="First Name"
-                  className="pl-9"
+                  className="pl-9 text-base sm:text-sm"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   required={isSignUp}
@@ -109,7 +109,7 @@ export default function LoginPage() {
                 <Input
                   type="text"
                   placeholder="Last Name"
-                  className="pl-9"
+                  className="pl-9 text-base sm:text-sm"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   required={isSignUp}
@@ -123,7 +123,7 @@ export default function LoginPage() {
             <Input
               type="email"
               placeholder="Email Address"
-              className="pl-9"
+              className="pl-9 text-base sm:text-sm"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -135,7 +135,7 @@ export default function LoginPage() {
             <Input
               type="password"
               placeholder="Password"
-              className="pl-9"
+              className="pl-9 text-base sm:text-sm"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -148,14 +148,14 @@ export default function LoginPage() {
               type="password"
               maxLength={6}
               placeholder="6-Digit Vault Security PIN"
-              className="pl-9 tracking-widest font-mono"
+              className="pl-9 tracking-widest font-mono text-base sm:text-sm"
               value={vaultPin}
               onChange={(e) => setVaultPin(e.target.value)}
               required
             />
           </div>
 
-          <Button type="submit" className="w-full h-11 text-base" disabled={loading}>
+          <Button type="submit" className="w-full h-10 sm:h-11 text-sm sm:text-base font-medium" disabled={loading}>
             {loading ? "Verifying Vault Key..." : isSignUp ? "Create Account & Verify" : "Unlock Vault"}
           </Button>
         </form>
@@ -163,7 +163,7 @@ export default function LoginPage() {
         <div className="text-center pt-2 border-t border-border">
           <button
             type="button"
-            className="text-xs text-muted-foreground hover:text-primary transition-colors"
+            className="text-xs text-muted-foreground hover:text-primary transition-colors py-1"
             onClick={() => setIsSignUp(!isSignUp)}
           >
             {isSignUp ? "Already have an account? Unlock Vault" : "Need an account? Create one with Security PIN"}
