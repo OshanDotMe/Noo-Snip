@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Plus, Code2 } from "lucide-react";
+import { Plus, Code2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function CreateSnippetModal({
@@ -43,26 +43,26 @@ export default function CreateSnippetModal({
     e.preventDefault();
     setLoading(true);
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      toast.error("User not authenticated!");
-      setLoading(false);
-      return;
-    }
-
-    const tagsArray = tags ? tags.split(",").map((t) => t.trim()).filter(Boolean) : [];
-
     try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        toast.error("User not authenticated!");
+        setLoading(false);
+        return;
+      }
+
+      const tagsArray = tags ? tags.split(",").map((t) => t.trim()).filter(Boolean) : [];
+
       const response = await fetch("/api/snippets", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          title,
-          description,
-          language,
+          title: title.trim(),
+          description: description.trim(),
+          language: language.trim().toLowerCase(),
           code_content: codeContent,
           tags: tagsArray,
           collection_id: collectionId || null,
@@ -96,52 +96,57 @@ export default function CreateSnippetModal({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className={triggerClassName}>
-          <Plus className="w-4 h-4" /> New Snippet
+        <Button className={`shrink-0 text-xs sm:text-sm font-medium h-10 px-4 active:scale-95 transition-all ${triggerClassName}`}>
+          <Plus className="w-4 h-4 shrink-0" />
+          <span>New Snippet</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Code2 className="w-5 h-5 text-primary" /> Create New Snippet
+      <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-lg max-h-[90vh] overflow-y-auto rounded-xl sm:rounded-2xl p-4 sm:p-6 mx-auto">
+        <DialogHeader className="text-left pb-1">
+          <DialogTitle className="flex items-center gap-2 text-base sm:text-lg font-semibold">
+            <Code2 className="w-5 h-5 text-primary shrink-0" />
+            <span>Create New Snippet</span>
           </DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleCreateSnippet} className="space-y-4 pt-2">
           <div>
-            <label className="text-xs font-medium mb-1 block">Title *</label>
+            <label className="text-xs font-medium mb-1 block text-muted-foreground">Title *</label>
             <Input
               placeholder="e.g., React Custom Fetch Hook"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              className="h-10 sm:h-11 text-xs sm:text-sm"
               required
             />
           </div>
 
           <div>
-            <label className="text-xs font-medium mb-1 block">Description</label>
+            <label className="text-xs font-medium mb-1 block text-muted-foreground">Description</label>
             <Input
               placeholder="Short note about what this code or prompt does"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              className="h-10 sm:h-11 text-xs sm:text-sm"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="text-xs font-medium mb-1 block">Language *</label>
+              <label className="text-xs font-medium mb-1 block text-muted-foreground">Language *</label>
               <Input
                 placeholder="javascript"
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
+                className="h-10 sm:h-11 text-xs sm:text-sm"
                 required
               />
             </div>
 
             <div>
-              <label className="text-xs font-medium mb-1 block">Collection</label>
+              <label className="text-xs font-medium mb-1 block text-muted-foreground">Collection</label>
               <select
-                className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                className="w-full h-10 sm:h-11 px-3 rounded-md border border-input bg-background text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                 value={collectionId}
                 onChange={(e) => setCollectionId(e.target.value)}
               >
@@ -156,10 +161,10 @@ export default function CreateSnippetModal({
           </div>
 
           <div>
-            <label className="text-xs font-medium mb-1 block">Code / Prompt *</label>
+            <label className="text-xs font-medium mb-1 block text-muted-foreground">Code / Prompt *</label>
             <Textarea
               placeholder="Paste your code snippet or prompt here..."
-              className="font-mono text-sm h-32"
+              className="font-mono text-xs sm:text-sm min-h-[120px] sm:min-h-[140px] resize-y"
               value={codeContent}
               onChange={(e) => setCodeContent(e.target.value)}
               required
@@ -167,33 +172,50 @@ export default function CreateSnippetModal({
           </div>
 
           <div>
-            <label className="text-xs font-medium mb-1 block">Tags (comma separated)</label>
+            <label className="text-xs font-medium mb-1 block text-muted-foreground">Tags (comma separated)</label>
             <Input
               placeholder="react, hooks, frontend"
               value={tags}
               onChange={(e) => setTags(e.target.value)}
+              className="h-10 sm:h-11 text-xs sm:text-sm"
             />
           </div>
 
-          <div className="flex items-center gap-2 pt-2">
+          <div className="flex items-center gap-2 pt-1">
             <input
               type="checkbox"
               id="is_public"
               checked={isPublic}
               onChange={(e) => setIsPublic(e.target.checked)}
-              className="rounded border-input"
+              className="h-4 w-4 rounded border-input text-primary focus:ring-primary cursor-pointer"
             />
-            <label htmlFor="is_public" className="text-xs font-medium cursor-pointer">
+            <label htmlFor="is_public" className="text-xs sm:text-sm font-medium cursor-pointer select-none">
               Make this snippet public (visible to everyone)
             </label>
           </div>
 
-          <div className="flex justify-end gap-3 pt-2">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+          <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pt-3 border-t border-border/50">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setOpen(false)}
+              className="w-full sm:w-auto h-10 sm:h-11 text-xs sm:text-sm"
+            >
               Cancel
             </Button>
-            <Button type="submit" disabled={loading}>
-              {loading ? "Saving..." : "Save Snippet"}
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full sm:w-auto h-10 sm:h-11 text-xs sm:text-sm font-medium active:scale-[0.98] transition-transform"
+            >
+              {loading ? (
+                <span className="flex items-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Saving...
+                </span>
+              ) : (
+                "Save Snippet"
+              )}
             </Button>
           </div>
         </form>
