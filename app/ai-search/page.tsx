@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Sparkles, Search, Loader2 } from "lucide-react";
+import { Sparkles, Search, Loader2, Lightbulb } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import { Input } from "@/components/ui/input";
@@ -42,59 +42,83 @@ export default function AISearchPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-background text-foreground">
+    <div className="flex flex-col md:flex-row min-h-screen bg-background text-foreground">
+      {/* Responsive Sidebar */}
       <Sidebar />
 
-      <div className="flex-1 flex flex-col">
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0">
         <Header />
 
-        <main className="flex-1 p-8 max-w-6xl w-full mx-auto space-y-6">
+        <main className="flex-1 p-4 sm:p-6 md:p-8 max-w-6xl w-full mx-auto space-y-6">
+          {/* Header Title Section */}
           <div className="space-y-2">
-            <div className="flex items-center gap-2 text-amber-500 font-semibold">
-              <Sparkles className="w-5 h-5" />
+            <div className="flex items-center gap-2 text-amber-500 font-semibold text-sm sm:text-base">
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
               <span>AI Vector Search</span>
             </div>
-            <h1 className="text-3xl font-bold tracking-tight">Semantic Snippet Search</h1>
-            <p className="text-muted-foreground text-sm">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+              Semantic Snippet Search
+            </h1>
+            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
               Search your code snippets using natural language descriptions (e.g. "How to save data in localstorage").
             </p>
           </div>
-          <p className="text-muted-foreground text-sm">
-            Tip: AI Search works best with natural language queries/questions rather than single keywords.
-          </p>
-          <p className="text-muted-foreground text-sm">
-            No snippets found.
 
-Try searching in full sentences (e.g. "How to set up Supabase client in Next.js" instead of "Supabase").
-          </p>
+          {/* AI Search Tip Box */}
+          <div className="p-3.5 sm:p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs sm:text-sm text-amber-600 dark:text-amber-400 flex items-start gap-3">
+            <Lightbulb className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 mt-0.5 text-amber-500" />
+            <div className="space-y-1">
+              <p className="font-medium">
+                Tip: AI Search works best with natural language queries or questions rather than single keywords.
+              </p>
+              <p className="text-[11px] sm:text-xs opacity-90">
+                Try searching: <span className="italic">"How to set up Supabase client in Next.js"</span> instead of just <span className="italic">"Supabase"</span>.
+              </p>
+            </div>
+          </div>
 
-          <form onSubmit={handleSearch} className="flex gap-2">
-            <Input
-              placeholder='Try asking: "How to handle search input debouncing in React?"'
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              className="h-12 text-base"
-            />
-            <Button type="submit" disabled={loading} className="h-12 px-6 gap-2">
-              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+          {/* Search Input Form */}
+          <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+            <div className="relative flex-1">
+              <Input
+                placeholder='Try asking: "How to handle search input debouncing in React?"'
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                className="h-11 sm:h-12 text-sm sm:text-base pr-4"
+              />
+            </div>
+            <Button 
+              type="submit" 
+              disabled={loading} 
+              className="h-11 sm:h-12 px-6 gap-2 w-full sm:w-auto shrink-0 font-medium"
+            >
+              {loading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Search className="w-4 h-4" />
+              )}
               <span>Search</span>
             </Button>
           </form>
-          
 
+          {/* Results Section */}
           {searched && (
-            <div className="space-y-4 pt-4">
-              <h2 className="text-sm font-semibold text-muted-foreground">
+            <div className="space-y-4 pt-2 sm:pt-4">
+              <h2 className="text-xs sm:text-sm font-semibold text-muted-foreground">
                 Matched Snippets ({results.length})
               </h2>
+
               {results.length === 0 && !loading ? (
-                <div className="p-8 border border-dashed border-border rounded-lg text-center text-muted-foreground text-sm">
-                  No semantically similar code snippets found for this query.
+                <div className="p-6 sm:p-10 border border-dashed border-border rounded-xl text-center text-muted-foreground text-xs sm:text-sm bg-card/50">
+                  No semantically similar code snippets found for this query. Try rephrasing your prompt.
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   {results.map((snippet) => (
-                    <SnippetCard key={snippet.id} snippet={snippet} />
+                    <div key={snippet.id} className="min-w-0">
+                      <SnippetCard snippet={snippet} />
+                    </div>
                   ))}
                 </div>
               )}
