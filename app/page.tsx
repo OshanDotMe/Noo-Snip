@@ -6,7 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { Search, Filter, Code2, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
-const ITEMS_PER_PAGE = 6; 
+const ITEMS_PER_PAGE = 8;
 
 export default function Dashboard() {
   const [snippets, setSnippets] = useState<Snippet[]>([]);
@@ -83,7 +83,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="w-full space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight">All Snippets</h1>
@@ -141,7 +141,7 @@ export default function Dashboard() {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
             {paginatedSnippets.map((snippet) => (
               <SnippetCard
                 key={snippet.id}
