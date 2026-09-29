@@ -1,4 +1,4 @@
-# 🚀 NooSnip - Code Snippet & AI Prompt Management Hub
+# NooSnip - Code Snippet & AI Prompt Management Hub
 
 > **Organize, discover, and share your code snippets and AI prompts effortlessly.**
 
@@ -17,7 +17,7 @@ NooSnip is a fast, modern, and intuitive developer tool designed to eliminate co
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Category | Technology |
 | :--- | :--- |
@@ -31,7 +31,7 @@ NooSnip is a fast, modern, and intuitive developer tool designed to eliminate co
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 Follow these steps to set up NooSnip locally on your machine.
 
@@ -45,13 +45,7 @@ Follow these steps to set up NooSnip locally on your machine.
 
 ## 👤 Author & Copyright
 
-Designed and Developed with ❤️ by **Oshan Adithya**.
-
-© 2026 **Oshan Adithya**. All Rights Reserved.
-
-This project and its source code are the intellectual property of **Oshan Adithya**. Unauthorized copying, modification, distribution, or re-uploading of this repository without explicit permission is strictly prohibited.
-
----
+Designed and Developed by **Oshan Adithya**.
 
 ## 📜 License
 
@@ -59,4 +53,4 @@ This project is protected under **All Rights Reserved** (or **MIT License** with
 
 For permissions, feedback, or collaboration, feel free to reach out:
 - **LinkedIn:** [Oshan Adithya](https://www.linkedin.com/)
-- **GitHub:** [@your-github-username](https://github.com/)
+- **GitHub:** [OshanDotMe](https://github.com/)
