@@ -43,8 +43,20 @@ Follow these steps to set up NooSnip locally on your machine.
 
 ---
 
-### 1. Clone the Repository
+## 👤 Author & Copyright
 
-```bash
-git clone [https://github.com/your-username/noo-snip.git](https://github.com/your-username/noo-snip.git)
-cd noo-snip
+Designed and Developed with ❤️ by **Oshan Adithya**.
+
+© 2026 **Oshan Adithya**. All Rights Reserved.
+
+This project and its source code are the intellectual property of **Oshan Adithya**. Unauthorized copying, modification, distribution, or re-uploading of this repository without explicit permission is strictly prohibited.
+
+---
+
+## 📜 License
+
+This project is protected under **All Rights Reserved** (or **MIT License** with Author Attribution).
+
+For permissions, feedback, or collaboration, feel free to reach out:
+- **LinkedIn:** [Oshan Adithya](https://www.linkedin.com/)
+- **GitHub:** [@your-github-username](https://github.com/)
