@@ -31,18 +31,6 @@ NooSnip is a fast, modern, and intuitive developer tool designed to eliminate co
 
 ---
 
-## Getting Started
-
-Follow these steps to set up NooSnip locally on your machine.
-
-### Prerequisites
-
-- **Node.js** (v18.x or higher)
-- **npm** or **yarn** / **pnpm**
-- A **Supabase** account
-
----
-
 ## 👤 Author & Copyright
 
 Designed and Developed by **Oshan Adithya**.
