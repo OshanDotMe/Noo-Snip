@@ -28,27 +28,20 @@ export async function proxy(request: NextRequest) {
       },
     }
   );
-
-  // User Auth Session එක ලබාගැනීම
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Login නොවී යා නොහැකි Protected Routes
   const protectedRoutes = ["/favorites", "/collections", "/settings", "/ai-search"];
   const isProtectedRoute = protectedRoutes.some((route) =>
     request.nextUrl.pathname.startsWith(route)
   );
-
-  // 1. User Logged-in නැත්නම්, Protected Page එකකට යන විට /login එකට Redirect කිරීම
   if (isProtectedRoute && !user) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     url.searchParams.set("redirectTo", request.nextUrl.pathname);
     return NextResponse.redirect(url);
   }
-
-  // 2. User Logged-in වී සිටී නම්, /login page එකට යන විට Home page එකට Redirect කිරීම
   if (request.nextUrl.pathname === "/login" && user) {
     const url = request.nextUrl.clone();
     url.pathname = "/";
