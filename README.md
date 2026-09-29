@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NooSnip - Code Snippet & AI Prompt Management Hub
 
-## Getting Started
+> **Organize, discover, and share your code snippets and AI prompts effortlessly.**
 
-First, run the development server:
+NooSnip is a fast, modern, and intuitive developer tool designed to eliminate code snippet clutter. Whether you're managing custom React hooks, Supabase database queries, or complex AI system prompts, NooSnip gives you a clean workspace with Collections, Community Sharing, and AI-powered Search.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ✨ Key Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- 📂 **Custom Collections:** Organize your snippets into structured categories and manage them with ease.
+- 🌐 **Community Feed:** Explore, copy, and share battle-tested prompts and reusable code snippets with other developers.
+- 🔍 **Instant Search & Language Filtering:** Filter snippets seamlessly by programming language, tags, or search queries.
+- ⚡ **AI-Powered Search:** Discover relevant code snippets based on semantic context and keywords.
+- 📱 **Fully Responsive UI:** Built with a sleek Dark Mode aesthetic, optimized across desktop, tablet, and mobile displays.
+- 🔒 **Row Level Security (RLS):** Fully secure backend with Supabase Auth ensuring complete user privacy and data security.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+| Category | Technology |
+| :--- | :--- |
+| **Framework** | [Next.js](https://nextjs.org/) (App Router) |
+| **Language** | [TypeScript](https://www.typescriptlang.org/) |
+| **Styling** | [Tailwind CSS](https://tailwindcss.com/) |
+| **Icons & UI** | [Lucide Icons](https://lucide.dev/), [Sonner](https://sonner.emilkowal.ski/) (Toasts) |
+| **Backend & Database** | [Supabase](https://supabase.com/) (PostgreSQL) |
+| **Authentication** | Supabase Auth |
+| **Hosting** | [Vercel](https://vercel.com/) |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 👤 Author & Copyright
 
-## Deploy on Vercel
+Designed and Developed by **Oshan Adithya**.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📜 License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is protected under **All Rights Reserved** (or **MIT License** with Author Attribution).
+
+For permissions, feedback, or collaboration, feel free to reach out:
+- **LinkedIn:** [Oshan Adithya](https://www.linkedin.com/)
