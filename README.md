@@ -53,4 +53,3 @@ This project is protected under **All Rights Reserved** (or **MIT License** with
 
 For permissions, feedback, or collaboration, feel free to reach out:
 - **LinkedIn:** [Oshan Adithya](https://www.linkedin.com/)
-- **GitHub:** [OshanDotMe](https://github.com/)
