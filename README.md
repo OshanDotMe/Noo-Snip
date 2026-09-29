@@ -1,4 +1,4 @@
-# 🚀 NooSnip — Code Snippet & AI Prompt Management Hub
+# 🚀 NooSnip - Code Snippet & AI Prompt Management Hub
 
 > **Organize, discover, and share your code snippets and AI prompts effortlessly.**
 
