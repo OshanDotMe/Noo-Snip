@@ -6,7 +6,7 @@ NooSnip is a fast, modern, and intuitive developer tool designed to eliminate co
 
 ---
 
-## ✨ Key Features
+## Key Features
 
 - 📂 **Custom Collections:** Organize your snippets into structured categories and manage them with ease.
 - 🌐 **Community Feed:** Explore, copy, and share battle-tested prompts and reusable code snippets with other developers.
