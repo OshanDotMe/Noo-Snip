@@ -97,7 +97,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
           <Link href="/login" onClick={handleLinkClick} className={getLinkClass("/login")}>
             <LogIn className="w-4 h-4 text-emerald-500 shrink-0" />
-            <span>Login / Account</span>
+            <span>Login</span>
           </Link>
         </div>
       </aside>
