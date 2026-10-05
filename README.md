@@ -26,7 +26,6 @@ NooSnip is a fast, modern, and intuitive developer tool designed to eliminate co
 | **Styling** | [Tailwind CSS](https://tailwindcss.com/) |
 | **Icons & UI** | [Lucide Icons](https://lucide.dev/), [Sonner](https://sonner.emilkowal.ski/) (Toasts) |
 | **Backend & Database** | [Supabase](https://supabase.com/) (PostgreSQL) |
-| **Authentication** | Supabase Auth |
 | **Hosting** | [Vercel](https://vercel.com/) |
 
 ---
