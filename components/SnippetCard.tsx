@@ -247,7 +247,7 @@ export default function SnippetCard({ snippet, onUpdate }: SnippetCardProps) {
               </div>
               <div>
                 <h3 className="font-bold text-base sm:text-lg">Delete Snippet</h3>
-                <p className="text-xs text-muted-foreground">This action cannot be undone.</p>
+                <p className="text-xs text-muted-foreground">This action cannot be undone</p>
               </div>
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground">
