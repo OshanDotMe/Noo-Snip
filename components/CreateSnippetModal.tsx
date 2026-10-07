@@ -211,7 +211,7 @@ export default function CreateSnippetModal({
               {loading ? (
                 <span className="flex items-center gap-2">
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Saving...
+                  Saving....
                 </span>
               ) : (
                 "Save Snippet"
