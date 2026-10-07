@@ -29,7 +29,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
           className="relative w-full flex items-center gap-2 px-3 py-2 text-xs sm:text-sm text-muted-foreground bg-background/60 border border-border rounded-lg hover:bg-accent/50 transition-colors text-left active:scale-[0.99] shrink min-w-0"
         >
           <Search className="w-4 h-4 text-muted-foreground shrink-0" />
-          <span className="truncate flex-1">Search snippets or prompts...</span>
+          <span className="truncate flex-1">Search snippets or prompts....</span>
           <div className="hidden sm:flex items-center gap-0.5 text-[10px] sm:text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded border border-border shrink-0">
             <Command className="w-3 h-3" />
             <span>K</span>
