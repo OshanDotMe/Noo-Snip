@@ -30,3 +30,8 @@ NooSnip is a fast, modern, and intuitive developer tool designed to eliminate co
 
 ---
 
+
+## Author & Copyright
+
+Designed and Developed by **Oshan Adithya**.
+
