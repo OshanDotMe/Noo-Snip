@@ -40,3 +40,4 @@ Designed and Developed by **Oshan Adithya**.
 This project is protected under **All Rights Reserved** (or **MIT License** with Author Attribution).
 
 For permissions, feedback, or collaboration, feel free to reach out:
+- **LinkedIn:** [Oshan Adithya](https://www.linkedin.com/)
