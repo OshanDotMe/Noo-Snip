@@ -35,3 +35,8 @@ NooSnip is a fast, modern, and intuitive developer tool designed to eliminate co
 
 Designed and Developed by **Oshan Adithya**.
 
+## License
+
+This project is protected under **All Rights Reserved** (or **MIT License** with Author Attribution).
+
+For permissions, feedback, or collaboration, feel free to reach out:
