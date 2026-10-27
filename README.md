@@ -19,7 +19,14 @@ NooSnip is a fast, modern, and intuitive developer tool designed to eliminate co
 
 ## Tech Stack
 
-
+| Category | Technology |
+| :--- | :--- |
+| **Framework** | [Next.js](https://nextjs.org/) (App Router) |
+| **Language** | [TypeScript](https://www.typescriptlang.org/) |
+| **Styling** | [Tailwind CSS](https://tailwindcss.com/) |
+| **Icons & UI** | [Lucide Icons](https://lucide.dev/), [Sonner](https://sonner.emilkowal.ski/) (Toasts) |
+| **Backend & Database** | [Supabase](https://supabase.com/) (PostgreSQL) |
+| **Hosting** | [Vercel](https://vercel.com/) |
 
 ---
 
