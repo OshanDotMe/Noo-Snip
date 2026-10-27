@@ -15,4 +15,23 @@ NooSnip is a fast, modern, and intuitive developer tool designed to eliminate co
 -  **Fully Responsive UI:** Built with a sleek Dark Mode aesthetic, optimized across desktop, tablet, and mobile displays.
 -  **Row Level Security (RLS):** Fully secure backend with Supabase Auth ensuring complete user privacy and data security.
 
+---
+
+## Tech Stack
+
+
+
+---
+
+
+## Author & Copyright
+
+Designed and Developed by **Oshan Adithya**.
+
+## License
+
+This project is protected under **All Rights Reserved** (or **MIT License** with Author Attribution).
+
+For permissions, feedback, or collaboration, feel free to reach out:
+- **LinkedIn:** [Oshan Adithya](https://www.linkedin.com/)
 
